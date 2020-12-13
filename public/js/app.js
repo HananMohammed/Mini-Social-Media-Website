@@ -72693,16 +72693,18 @@ var App = /*#__PURE__*/function (_Component) {
       this.setState({
         followings: [].concat(_toConsumableArray(this.state.followings), [following]),
         followers: [].concat(_toConsumableArray(this.state.followers), [followers])
-      }); // this.interval = setInterval(() => {this.getPosts()}, 1000)
-
+      });
       Echo["private"]('new-post').listen('PostCreated', function (e) {
         if (window.Laravel.user.following.includes(e.post.user_id)) {
-          console.log("from Pusher", e, e.post.user_id);
-
           _this2.setState({
             posts: [e.post].concat(_toConsumableArray(_this2.state.posts))
           });
         }
+      });
+      Echo["private"]('delete-post').listen('DeletePost', function (e) {
+        _this2.setState({
+          posts: _toConsumableArray(e.posts)
+        });
       });
     }
   }, {
@@ -72791,15 +72793,17 @@ var App = /*#__PURE__*/function (_Component) {
   }, {
     key: "handelDelete",
     value: function handelDelete(event) {
+      var _this5 = this;
+
       event.preventDefault();
       var deletePostId = event.target.getAttribute("postid");
       axios__WEBPACK_IMPORTED_MODULE_1___default.a["delete"]("/post/".concat(deletePostId)).then(function (response) {
-        /*#__PURE__*/
-        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-          className: "alert alert-success",
-          id: "footer",
-          role: "alert"
-        }, response.data.success);
+        console.log(response);
+
+        _this5.setState({
+          posts: _toConsumableArray(response.data.posts),
+          loading: false
+        });
       })["catch"](function (error) {
         console.log(error);
       });
@@ -72807,13 +72811,13 @@ var App = /*#__PURE__*/function (_Component) {
   }, {
     key: "postData",
     value: function postData() {
-      var _this5 = this;
+      var _this6 = this;
 
       axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/post', {
         body: this.state.body
       }).then(function (response) {
-        _this5.setState({
-          posts: [response.data].concat(_toConsumableArray(_this5.state.posts))
+        _this6.setState({
+          posts: [response.data].concat(_toConsumableArray(_this6.state.posts))
         });
       })["catch"](function (error) {
         console.log(error);
@@ -72825,13 +72829,13 @@ var App = /*#__PURE__*/function (_Component) {
   }, {
     key: "getPosts",
     value: function getPosts() {
-      var _this6 = this;
+      var _this7 = this;
 
       this.setState({
         loading: true
       });
       axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/posts').then(function (response) {
-        _this6.setState({
+        _this7.setState({
           posts: _toConsumableArray(response.data.posts),
           loading: false
         });
@@ -72842,7 +72846,7 @@ var App = /*#__PURE__*/function (_Component) {
   }, {
     key: "renderPosts",
     value: function renderPosts() {
-      var _this7 = this;
+      var _this8 = this;
 
       if (this.state.searchposts.length !== 0) {
         return this.state.searchposts.map(function (searchpost) {
@@ -72876,12 +72880,12 @@ var App = /*#__PURE__*/function (_Component) {
               className: "btn btn-primary ml-2",
               "data-toggle": "modal",
               "data-target": "#exampleModal",
-              onClick: _this7.handleModal
+              onClick: _this8.handleModal
             }, "Edit Post"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", (_React$createElement = {
               type: "submit",
               postid: post.id,
               className: "dropdown-item"
-            }, _defineProperty(_React$createElement, "type", "button"), _defineProperty(_React$createElement, "value", "delete post"), _defineProperty(_React$createElement, "onClick", _this7.handelDelete), _React$createElement))))) : "", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+            }, _defineProperty(_React$createElement, "type", "button"), _defineProperty(_React$createElement, "value", "delete post"), _defineProperty(_React$createElement, "onClick", _this8.handelDelete), _React$createElement))))) : "", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
               className: "card-title ml-3"
             }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
               href: "/users/".concat(post.user.username)
@@ -72916,7 +72920,7 @@ var App = /*#__PURE__*/function (_Component) {
             }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
               "aria-hidden": "true"
             }, "\xD7"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
-              onSubmit: _this7.handelEditSubmit
+              onSubmit: _this8.handelEditSubmit
             }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
               className: "modal-body"
             }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
@@ -72930,7 +72934,7 @@ var App = /*#__PURE__*/function (_Component) {
               id: "editposttextarea",
               rows: "6",
               maxLength: "340",
-              onChange: _this7.handleChange,
+              onChange: _this8.handleChange,
               required: true
             })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
               className: "modal-footer"
@@ -72976,12 +72980,12 @@ var App = /*#__PURE__*/function (_Component) {
             className: "btn btn-primary ml-2",
             "data-toggle": "modal",
             "data-target": "#exampleModal",
-            onClick: _this7.handleModal
+            onClick: _this8.handleModal
           }, "Edit Post"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", (_React$createElement2 = {
             type: "submit",
             postid: post.id,
             className: "dropdown-item"
-          }, _defineProperty(_React$createElement2, "type", "button"), _defineProperty(_React$createElement2, "value", "delete post"), _defineProperty(_React$createElement2, "onClick", _this7.handelDelete), _React$createElement2))))) : "", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          }, _defineProperty(_React$createElement2, "type", "button"), _defineProperty(_React$createElement2, "value", "delete post"), _defineProperty(_React$createElement2, "onClick", _this8.handelDelete), _React$createElement2))))) : "", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             className: "card-title ml-3"
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
             href: "/users/".concat(post.user.username)
@@ -73016,7 +73020,7 @@ var App = /*#__PURE__*/function (_Component) {
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             "aria-hidden": "true"
           }, "\xD7"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
-            onSubmit: _this7.handelEditSubmit
+            onSubmit: _this8.handelEditSubmit
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             className: "modal-body"
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
@@ -73030,7 +73034,7 @@ var App = /*#__PURE__*/function (_Component) {
             id: "editposttextarea",
             rows: "6",
             maxLength: "340",
-            onChange: _this7.handleChange,
+            onChange: _this8.handleChange,
             required: true
           })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             className: "modal-footer"

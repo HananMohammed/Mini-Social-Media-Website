@@ -1,8 +1,6 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://mk0hootsuiteblof6bud.kinstacdn.com/wp-content/uploads/2017/06/types-of-social-media-620x310.png" width="400"></a></p>
-
-<p align="center">
-</p>
-
+<video width="320" height="240" controls>
+  <source src="video.mov" type="video/mp4">
+</video>
 ##   Social Media Portal 
 
  Realtime Social Media Single Page Application Used technology html5,css3,javascript,React js for frontendand php , laravel framework for backend ( Version 1 )

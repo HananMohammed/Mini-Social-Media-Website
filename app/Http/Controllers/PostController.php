@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\DeletePost;
 use App\Http\Requests\PostRequest;
 use Illuminate\Http\Request;
 use App\Models\Post;
@@ -111,7 +112,15 @@ class PostController extends Controller
     {
          $post->find($request->id)->delete();
 
-         return response()->json(["success" =>" Post Deleted Successfully "]);
+         $allPosts = $post->whereIn('user_id',
+            $request->user()->following()->pluck('users.id')->push($request->user()->id))
+            ->with('user');
+
+        $posts = $allPosts->orderBy('created_at', 'DESC')->get();
+
+        broadcast(new DeletePost($posts,$request->user()))->toOthers();
+
+         return response()->json(["posts" => $posts]);
     }
 
 

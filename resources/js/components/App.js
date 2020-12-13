@@ -35,13 +35,15 @@ class App extends Component {
             followings: [...this.state.followings, following],
             followers: [...this.state.followers, followers]
         })
-
-       // this.interval = setInterval(() => {this.getPosts()}, 1000)
         Echo.private('new-post').listen('PostCreated', (e) => {
              if(window.Laravel.user.following.includes(e.post.user_id )){
-                 console.log("from Pusher", e, e.post.user_id);
                  this.setState({posts: [e.post, ...this.state.posts]})
              }
+        })
+
+        Echo.private('delete-post').listen('DeletePost',(e)=>{
+
+           this.setState({posts: [...e.posts]})
         })
     }
 
@@ -121,11 +123,15 @@ class App extends Component {
     handelDelete(event){
         event.preventDefault();
         let deletePostId = event.target.getAttribute("postid")
+
         axios.delete(`/post/${deletePostId}`)
             .then(response => {
-                <div className="alert alert-success" id="footer" role="alert">
-                    {response.data.success}
-                </div>
+                console.log(response)
+                this.setState({
+                    posts:[...response.data.posts],
+                    loading: false
+                });
+
             })
             .catch(function (error) {
                 console.log(error);
