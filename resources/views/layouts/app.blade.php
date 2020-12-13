@@ -80,13 +80,22 @@
         <main class="py-4">
             @yield('content')
         </main>
-        
+
     </div>
     <script src="https://kit.fontawesome.com/379e3f0d45.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     -->
-    @yield('scripts') 
+    @yield('scripts')
+<script>
+    window.Laravel = <?php echo json_encode([
+        'csrfToken' => csrf_token(),
+        'user'=>[
+            'id' => Auth::check() ? Auth::user()->id : null ,
+            'following' => Auth::check() ? Auth::user()->following()->pluck('users.id') : null ,
+        ]
+    ]); ?>
+</script>
     </body>
 </html>

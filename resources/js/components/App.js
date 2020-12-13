@@ -2,12 +2,12 @@ import React, { useState, Component} from 'react';
 import axios from 'axios';
 
 class App extends Component {
-   
+
     constructor(props) {
 
         super(props);
 
-        this.state = {  
+        this.state = {
             followings: [],
             followers: [],
             body: '',
@@ -17,15 +17,15 @@ class App extends Component {
             show:false,
             query:'',
         };
-        
-        //bind method to the class 
+
+        //bind method to the class
         this.handelSubmit = this.handelSubmit.bind(this);
         this.handelEditSubmit = this.handelEditSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.renderPosts = this.renderPosts.bind(this);
         this.handelDelete = this.handelDelete.bind(this);
         this.handleModal = this.handleModal.bind(this);
-        this.closeOneModal = this.closeOneModal.bind(this);      
+        this.closeOneModal = this.closeOneModal.bind(this);
         this.hanldeOnInputChange = this.hanldeOnInputChange.bind(this);
 
     }
@@ -36,7 +36,13 @@ class App extends Component {
             followers: [...this.state.followers, followers]
         })
 
-        this.interval = setInterval(() => {this.getPosts()}, 1000)
+       // this.interval = setInterval(() => {this.getPosts()}, 1000)
+        Echo.private('new-post').listen('PostCreated', (e) => {
+             if(window.Laravel.user.following.includes(e.post.user_id )){
+                 console.log("from Pusher", e, e.post.user_id);
+                 this.setState({posts: [e.post, ...this.state.posts]})
+             }
+        })
     }
 
     componentWillUnMount() {
@@ -45,7 +51,7 @@ class App extends Component {
 
     componentWillMount(){
         this.getPosts();
-        
+
     }
     hanldeOnInputChange(event){
         event.preventDefault()
@@ -54,14 +60,11 @@ class App extends Component {
         axios.post('/search',
             { querySearch: query},
         ).then(response=>{
-            // console.log(response.data)
-            // console.log(response)
-            // console.log(this.state.posts)
             this.setState({ searchposts: [response] })
         })
 
     }
-   
+
     handleModal(event){
        // event.preventDefault();
         let editPostId = event.target.getAttribute("postid")
@@ -74,7 +77,7 @@ class App extends Component {
                 console.log(error);
             });
     }
-  
+
     handelSubmit(event){
         event.preventDefault();
         this.postData()
@@ -83,14 +86,14 @@ class App extends Component {
     handelEditSubmit(event){
         event.preventDefault();
         let updateId = document.getElementById('editposthiddenInput').getAttribute('value');
-         
+
         axios.post(`/postUpdate/${updateId}`, {
             body: this.state.body
         })
             .then(res => {
                 this.closeOneModal("exampleModal")
-                
-            })           
+
+            })
     }
     closeOneModal(modalId) {
 
@@ -160,14 +163,14 @@ class App extends Component {
                 console.log(error);
             });
 
-    }  
+    }
 
     renderPosts(){
-         
+
        if(this.state.searchposts.length !== 0){
            return this.state.searchposts.map(
                searchpost => searchpost.data.map(
-                   post => 
+                   post =>
                        <div className="card timelin-post mb-3" key={post.id}>
                            <div className=" card-body post mb-5">
                                {(userCanModify === post.user.username) ?
@@ -215,7 +218,7 @@ class App extends Component {
                                </div>
                            </div>
                        </div>
-                   
+
                    )
            )
        }else{
@@ -272,10 +275,10 @@ class App extends Component {
            )
 
        }
-      
+
     }
     render() {
-        const {query} = this.state ; 
+        const {query} = this.state ;
         return (
                 <div className="row">
                     <div className="col-md-8 mt-3">
@@ -287,7 +290,7 @@ class App extends Component {
                                 <form onSubmit={this.handelSubmit}>
                                     <textarea className="form-control mb-3 mt-3" id="posttextarea"  onChange={this.handleChange} value={this.state.body} rows="6" maxLength="340" placeholder="What's in Your Mind" required />
                                     <input type="submit" className="form-control btn btn-primary"  id="postbtn" value="Post"/>
-                                </form>  
+                                </form>
                                 <div className="container">
                                     <div>
                                         <input type="text"
@@ -297,7 +300,7 @@ class App extends Component {
                                             name="querySearch"
                                             value={query}
                                             onChange = {this.hanldeOnInputChange}
-                                             
+
                                         />
                                     </div>
                                     <div className="col-md-12 mt-5">
@@ -306,8 +309,8 @@ class App extends Component {
                             </div>
                         </div>
                     </div>
-            
-               
+
+
                 </div>
                 <div className="col-md-4 mt-3">
                     <div className="row">
@@ -353,7 +356,7 @@ class App extends Component {
             </div>
         );
     }
-   
+
 }
 
 export default App ;
