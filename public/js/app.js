@@ -72706,6 +72706,13 @@ var App = /*#__PURE__*/function (_Component) {
           posts: _toConsumableArray(e.posts)
         });
       });
+      Echo["private"]('update-post').listen('PostUpdate', function (e) {
+        _this2.setState({
+          posts: _toConsumableArray(e.posts)
+        });
+
+        console.log("from pusher", e.posts);
+      });
     }
   }, {
     key: "componentWillUnMount",
@@ -72764,6 +72771,12 @@ var App = /*#__PURE__*/function (_Component) {
         body: this.state.body
       }).then(function (res) {
         _this4.closeOneModal("exampleModal");
+
+        _this4.setState({
+          posts: _toConsumableArray(res.data.posts)
+        });
+
+        console.log("From Method Update", res.data.posts);
       });
     }
   }, {

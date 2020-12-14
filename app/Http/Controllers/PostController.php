@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\DeletePost;
+use App\Events\PostUpdate;
 use App\Http\Requests\PostRequest;
 use Illuminate\Http\Request;
 use App\Models\Post;
@@ -76,9 +77,13 @@ class PostController extends Controller
      */
     public function update(PostRequest $request, $id)
     {
-        Post::find($id)->update($request->all());
+         $posted = Post::find($id)->update($request->all());
 
-        return response()->json(["success" =>" Post Updated Successfully "]);
+         $posts = $this->renderPosts($request, Post::find($id));
+
+         broadcast(new PostUpdate($posts, Post::find($id)->user))->toOthers();
+
+        return response()->json(["posts"=>$posts, "success" =>" Post Updated Successfully "]);
     }
     /**
      * function responsible to search post
@@ -110,19 +115,23 @@ class PostController extends Controller
      */
     public function delete(Request $request , Post $post)
     {
-         $post->find($request->id)->delete();
-
-         $allPosts = $post->whereIn('user_id',
-            $request->user()->following()->pluck('users.id')->push($request->user()->id))
-            ->with('user');
-
-        $posts = $allPosts->orderBy('created_at', 'DESC')->get();
+        $post->find($request->id)->delete();
+        $posts = $this->renderPosts($request, $post);
 
         broadcast(new DeletePost($posts,$request->user()))->toOthers();
 
          return response()->json(["posts" => $posts]);
     }
+    public function renderPosts($request, $post)
+    {
+        $allPosts = $post->whereIn('user_id',
+            $request->user()->following()->pluck('users.id')->push($request->user()->id))
+            ->with('user');
 
+        $posts = $allPosts->orderBy('created_at', 'DESC')->get();
+
+        return $posts;
+    }
 
 
 }

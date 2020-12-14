@@ -45,6 +45,11 @@ class App extends Component {
 
            this.setState({posts: [...e.posts]})
         })
+
+        Echo.private('update-post').listen('PostUpdate',(e) => {
+            this.setState({posts: [...e.posts]})
+            console.log("from pusher", e.posts)
+        })
     }
 
     componentWillUnMount() {
@@ -94,7 +99,8 @@ class App extends Component {
         })
             .then(res => {
                 this.closeOneModal("exampleModal")
-
+                this.setState({posts:[...res.data.posts]})
+                console.log("From Method Update",res.data.posts)
             })
     }
     closeOneModal(modalId) {

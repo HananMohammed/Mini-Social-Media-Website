@@ -25,3 +25,7 @@ Broadcast::channel('new-post', function ($user){
 Broadcast::channel('delete-post', function ($user){
     return Auth::check();
 });
+
+Broadcast::channel('update-post', function ($user){
+    return Auth::check();
+});
