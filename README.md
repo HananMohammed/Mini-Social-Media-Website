@@ -1,15 +1,24 @@
-<video width="320" height="240" controls>
-  <source src="public/assets/bandicam%202020-12-14%2013-54-30-396.mp4" type="video/mp4">
-</video>
-##   Social Media Portal 
 
- Realtime Social Media Single Page Application Used technology html5,css3,javascript,React js for frontendand php , laravel framework for backend ( Version 1 )
-
+ [![IMAGE ALT TEXT HERE](http://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)](http://www.youtube.com/watch?v=2kIRfLWdqpI)
  
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Laravel React App for Mini Social Media WebSite 
 
+this is basic Realtime Social Media Single Page Application built using Laravel and React.
 
+##Features 
+<ul>
+<li>Laravel 8 , React Js</li>
+<li>React Hook, React Context for state management </li>
+<li>Authentication with JWT </li>
+<li>Laravel Events ,Pusher,and BroadCast </li>
+<li>Login, register, reset password</li>
+<li>Flexible Page Layout</li>
+<li>Users Following And Followers to Follow Each other timeLine </li>
+<li>Flexible, Protected Routing</li>
+<li>Flexible, Protected Routing</li>
+<li> html5,css3,javascript</li>
+</ul>
 
 ## License
 
