@@ -1,5 +1,5 @@
 <video width="320" height="240" controls>
-  <source src="video.mov" type="video/mp4">
+  <source src="public/assets/bandicam%202020-12-14%2013-54-30-396.mp4" type="video/mp4">
 </video>
 ##   Social Media Portal 
 
